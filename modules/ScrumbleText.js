@@ -1,8 +1,8 @@
 class ScrambelText {
 
-  constructor(words = 'text') {
+  constructor( words = 'Scramble text effect with JS entertoinfo' ) {
 
-    this.words = words.match(/\w+/g)
+    this.words = words.match( /\w+/g )
 
     this.letters = []
     this.counter = 0
@@ -23,25 +23,59 @@ class ScrambelText {
 
   }
   update( deltaTime ) {
-    const { words, latters, counter, step, delay, chance, from, to} = this
+    const { words, letters, counter, step, delay, chance, from, to} = this
     const { floor, random} = Math
 
     this.accum += deltaTime
-    this.pause = ( this.pause - deltaTime) % delay
+    this.pause = ( this.pause - deltaTime ) % delay
+
+    while( this.accum > step ){
+
+      this.accum -= step
+      this.alpha = .4
+
+      if ( this.pause > 0 ) {
+        this.alpha = 1
+        return
+      }
+
+      if ( letters.length < words[ counter ].length ){
+        const rndRng = floor ( random() * ( to - from ) + from )
+        letters.push( String.fromCharCode( rndRng ) )
+      
+      } else if ( letters.length > words[ counter ].length ){
+        const rndPos = floor ( random() * letters.length )
+        letters.splice ( rndPos, 1 )
+
+      }
+
+      if ( words[ counter ] == letters.join('') ){
+        this.pause = delay
+        this.counter = ( counter + 1 ) % words.length
+      
+      } else if ( words[ counter ] != letters.join('') ){
+        const rndRng = floor( random() * ( to - from ) + from )
+        const rndChar = String.fromCharCode( rndRng )
+
+        const rndPos = floor ( random () * letters.length )
+
+        if ( letters[ rndPos ] != words [ counter ][ rndPos ] ) {
+          const char = random() > chance ? rndChar : words[ counter ][ rndPos ]
+          letters[ rndPos ] = char 
+        }
+      } 
+    }
   }
-  render({
-    ctx,
-    w,
-    h,
-  }) {
-    ctx.clearRect(0, 0, w, h, )
-    ctx.font = '600 150px PermanentMarker'
-    ctx.textAling = 'center'
+  render( { ctx, w, h } ) {
+
+    ctx.clearRect( 0, 0, w, h )
+
+    ctx.font = '500 100px PressStart2P'
+    ctx.textAlign="center"
     ctx.textBaseline = 'middle'
 
-    ctx.fillStyle = 'white'
+    ctx.fillStyle = `hsla( ${ this.pause / 40 + 20 }, ${ 100 * this.alpha }%, 55%, ${ this.alpha })`
 
-    ctx.fillText(this.words[0], w / 2, h / 2)
-
+    ctx.fillText( this.letters.join(''), 970, 450)
   }
 }

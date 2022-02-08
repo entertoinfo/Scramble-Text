@@ -1,13 +1,13 @@
 class Layer {
 
-  constructor(container = document.body) {
+  constructor( container = document.body ) {
 
-    this.cnv = document.createElement('canvas')
-    this.ctx = this.cnv.getContext('2d')
-    container.appendChild(this.cnv)
+    this.cnv = document.createElement( 'canvas' )
+    this.ctx = this.cnv.getContext( '2d' )
+    container.appendChild( this.cnv )
 
     this.resize()
-    addEventListener('resize', () => this.resize())
+    addEventListener( 'resize', () => this.resize() )
   }
   resize() {
 
